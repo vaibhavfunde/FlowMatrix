@@ -8,7 +8,7 @@ import { validateRequest } from "zod-express-middleware";
 } from "../libs/validate-schema.js";
 import authMiddleware from "../middleware/auth-middleware.js";
 import { z } from "zod";
-import { createWorkspace, getWorkspaces } from "../controller/workspace.js";
+import { createWorkspace, getWorkspaceDetails, getWorkspaceProjects, getWorkspaces } from "../controller/workspace.js";
 
 const router = express.Router();
 
@@ -45,8 +45,8 @@ router.post(
 
  router.get("/", authMiddleware, getWorkspaces);
 
-// router.get("/:workspaceId", authMiddleware, getWorkspaceDetails);
-// router.get("/:workspaceId/projects", authMiddleware, getWorkspaceProjects);
+ router.get("/:workspaceId", authMiddleware, getWorkspaceDetails);
+ router.get("/:workspaceId/projects", authMiddleware, getWorkspaceProjects);
 // router.get("/:workspaceId/stats", authMiddleware, getWorkspaceStats);
 
 export default router;

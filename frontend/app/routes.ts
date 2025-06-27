@@ -10,7 +10,13 @@ export default [
         route("verify-email", "routes/auth/verify-email.tsx"),
       ]),
       layout("routes/dashboard/dashboard-layout.tsx", [
-         route("dashboard", "routes/dashboard/index.tsx")
+         route("dashboard", "routes/dashboard/index.tsx"),
+         route("workspaces", "routes/dashboard/workspaces/index.tsx"),
+         route(
+           "workspaces/:workspaceId",
+           "routes/dashboard/workspaces/workspace-details.tsx"
+         ),
+
       ]),
     
 ] satisfies RouteConfig;
