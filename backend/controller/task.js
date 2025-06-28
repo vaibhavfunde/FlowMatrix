@@ -341,18 +341,76 @@ const updateTaskAssignees = async (req, res) => {
     const taskLink = `${process.env.FRONTEND_URL}/workspaces/${workspace._id}/projects/${project._id}/tasks/${task._id}`;
 
     const emailSubject = "New Task Assignment";
-    const emailBody = `
-      <p>You have been assigned to a new task: <strong>${task.title}</strong>.</p>
-      <p>Click <a href="${taskLink}">here</a> to view the task.</p>
-    `;
+    // const emailBody = `
+    //   <p>You have been assigned to a new task: <strong>${task.title}</strong>.</p>
+    //   <p>Click <a href="${taskLink}">here</a> to view the task.</p>
+    // `;
 
     // Send email to each assignee
     const users = await User.find({ _id: { $in: assignees } });
+
+    const emailBody = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e2e2; border-radius: 8px; background-color: #ffffff;">
+    <h2 style="color: #333333;">📌 New Task Assigned</h2>
+
+    <p style="font-size: 14px; color: #555555;">
+      Hello ${users.map(user => user.name).join(", ")},
+    </p>
+
+    <p style="font-size: 14px; color: #555555;">
+      You have been assigned to a new task: <strong>${task.title}</strong> in the project <strong>${project.title}</strong>.
+    </p>
+
+    <p style="font-size: 14px; color: #555555;">
+      You can view the task by clicking the button below:
+    </p>
+
+    <a href="${taskLink}" style="display: inline-block; padding: 10px 16px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">View Task</a>
+
+    <p style="font-size: 12px; color: #999999; margin-top: 30px;">
+      You are receiving this email because you have been assigned to the project <strong>${project.title}</strong>.
+    </p>
+  </div>
+`;
+
     for (const user of users) {
       if (user.email) {
         await sendEmail(user.email, emailSubject, emailBody);
       }
     }
+
+    // for (const userId of assignees) {
+    //   const userDoc = await User.findById(userId); // ✅ Fix: define userDoc
+    
+    //   if (!userDoc) continue;
+    
+    //   const emailBody = `
+    //     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e2e2; border-radius: 8px; background-color: #ffffff;">
+    //       <h2 style="color: #333333;">📌 New Task Assigned</h2>
+    
+    //       <p style="font-size: 14px; color: #555555;">
+    //         Hello ${userDoc.name},
+    //       </p>
+    
+    //       <p style="font-size: 14px; color: #555555;">
+    //         You have been assigned to a new task: <strong>${task.title}</strong> in the project <strong>${project.title}</strong>.
+    //       </p>
+    
+    //       <a href="${taskLink}" style="display: inline-block; padding: 10px 16px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">View Task</a>
+    
+    //       <p style="font-size: 12px; color: #999999; margin-top: 30px;">
+    //         You are receiving this email because you have been added to the project <strong>${project.title}</strong>.
+    //       </p>
+    //     </div>
+    //   `;
+    
+    //   await sendEmail({
+    //     to: userDoc.email,
+    //     subject: `You've been assigned to a new task: ${task.title}`,
+    //     html: emailBody,
+    //   });
+    // }
+    
 
     res.status(200).json(task);
   } catch (error) {
