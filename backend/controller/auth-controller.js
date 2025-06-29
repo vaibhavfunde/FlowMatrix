@@ -82,9 +82,82 @@ const registeruser = async (req, res) => {
         });
 
         // send verification email
-        const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
-        const emailBody = `<p>Click <a href="${verificationLink}">here</a> to verify your email</p>`;
-        const emailSubject = "Verify your email";
+        // const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        // const emailBody = `<p>Click <a href="${verificationLink}">here</a> to verify your email</p>`;
+        // const emailSubject = "Verify your email";
+//         const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+
+// const emailSubject = "Verify your Email Address";
+
+// const emailBody = `
+//   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e2e2; border-radius: 8px; background-color: #ffffff;">
+//     <h2 style="color: #333;">🔐 Verify Your Email</h2>
+
+//     <p style="font-size: 14px; color: #555;">
+//       Thank you for signing up! Please verify your email address by clicking the button below:
+//     </p>
+
+//     <a href="${verificationLink}" style="display: inline-block; margin-top: 16px; padding: 12px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">
+//       Verify Email
+//     </a>
+
+//     <p style="font-size: 12px; color: #999; margin-top: 24px;">
+//       If you didn’t create an account, you can ignore this email.
+//     </p>
+//   </div>
+// `;
+
+const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+const emailSubject = "Verify your Email Address";
+
+const emailBody = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Verify Your Email</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f4f7;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center" style="padding: 40px 0;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; padding: 40px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <tr>
+                <td style="text-align: center;">
+                  <h1 style="margin-bottom: 16px; font-size: 24px; color: #333333;">Welcome to Our Platform!</h1>
+                  <p style="font-size: 16px; color: #555555; margin-bottom: 24px;">
+                    Hi there, <br /> Please verify your email address to complete your registration and start using your account.
+                  </p>
+
+                  <a href="${verificationLink}" target="_blank"
+                    style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #007bff; border-radius: 4px; text-decoration: none;">
+                    Verify Email
+                  </a>
+
+                  <p style="font-size: 14px; color: #888888; margin-top: 30px;">
+                    If you didn’t request this, you can safely ignore this email.
+                  </p>
+
+                  <p style="font-size: 14px; color: #888888;">
+                    Or copy and paste this link into your browser:<br />
+                    <a href="${verificationLink}" style="color: #007bff;">${verificationLink}</a>
+                  </p>
+                </td>
+              </tr>
+            </table>
+
+            <p style="font-size: 12px; color: #999999; margin-top: 20px;">
+              &copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>
+`;
+
+
 
         const isEmailSend = await sendEmail(email, emailSubject, emailBody);
 
