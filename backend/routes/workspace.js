@@ -8,7 +8,7 @@ import { validateRequest } from "zod-express-middleware";
 } from "../libs/validate-schema.js";
 import authMiddleware from "../middleware/auth-middleware.js";
 import { z } from "zod";
-import { createWorkspace, getWorkspaceDetails, getWorkspaceProjects, getWorkspaces, getWorkspaceStats } from "../controller/workspace.js";
+import { acceptGenerateInvite, acceptInviteByToken, createWorkspace, getWorkspaceDetails, getWorkspaceProjects, getWorkspaces, getWorkspaceStats, inviteUserToWorkspace } from "../controller/workspace.js";
 
 const router = express.Router();
 
@@ -19,29 +19,29 @@ router.post(
   createWorkspace
 );
 
-// router.post(
-//   "/accept-invite-token",
-//   authMiddleware,
-//   validateRequest({ body: tokenSchema }),
-//   acceptInviteByToken
-// );
+router.post(
+  "/accept-invite-token",
+  authMiddleware,
+  validateRequest({ body: tokenSchema }),
+  acceptInviteByToken
+);
 
-// router.post(
-//   "/:workspaceId/invite-member",
-//   authMiddleware,
-//   validateRequest({
-//     params: z.object({ workspaceId: z.string() }),
-//     body: inviteMemberSchema,
-//   }),
-//   inviteUserToWorkspace
-// );
+router.post(
+  "/:workspaceId/invite-member",
+  authMiddleware,
+  validateRequest({
+    params: z.object({ workspaceId: z.string() }),
+    body: inviteMemberSchema,
+  }),
+  inviteUserToWorkspace
+);
 
-// router.post(
-//   "/:workspaceId/accept-generate-invite",
-//   authMiddleware,
-//   validateRequest({ params: z.object({ workspaceId: z.string() }) }),
-//   acceptGenerateInvite
-// );
+router.post(
+  "/:workspaceId/accept-generate-invite",
+  authMiddleware,
+  validateRequest({ params: z.object({ workspaceId: z.string() }) }),
+  acceptGenerateInvite
+);
 
  router.get("/", authMiddleware, getWorkspaces);
 

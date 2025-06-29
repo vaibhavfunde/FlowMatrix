@@ -24,6 +24,7 @@ const loginSchema = z.object({
 
   const emailSchema = z.object({
     email: z.string().email("Invalid email address"),
+    
   });
 
   const tokenSchema = z.object({
