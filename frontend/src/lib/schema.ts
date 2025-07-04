@@ -68,3 +68,9 @@ import { ProjectStatus } from '~/types';
     email: z.string().email(),
     role: z.enum(["admin", "member", "viewer"]),
   });
+
+
+  export const twoFactorSchema = z.object({
+    email: z.string().email(),
+    code: z.string().length(6, { message: "Code must be 6 digits" }),
+  });

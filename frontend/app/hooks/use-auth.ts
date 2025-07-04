@@ -41,3 +41,10 @@ export const useVerifyEmailMutation = () => {
       }) => postData("/auth/reset-password", data),
     });
   };
+
+  export const useVerifyTwoFAMutation = () => {
+    return useMutation({
+      mutationFn: (data: { email: string; code: string }) =>
+        postData("/auth/verify", data),
+    });
+  };

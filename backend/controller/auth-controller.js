@@ -5,6 +5,8 @@ import Verification from "../models/verification.js";
 import { sendEmail } from "../libs/send-email.js";
 import aj from "../libs/arcjet.js";
 
+
+
 const registeruser = async (req, res) => {
 
      
@@ -174,94 +176,203 @@ const emailBody = `
     }
 }
 
-const loginUser = async (req, res) => {
+// const loginUser = async (req, res) => {
   
     
 
-        try {
-            const { email, password } = req.body;
+//         try {
+//             const { email, password } = req.body;
         
-            const user = await User.findOne({ email }).select("+password");
+//             const user = await User.findOne({ email }).select("+password");
         
-            if (!user) {
-              return res.status(400).json({ message: "Invalid email or password" });
-            }
+//             if (!user) {
+//               return res.status(400).json({ message: "Invalid email or password" });
+//             }
         
-            if (!user.isEmailVerified) {
-              const existingVerification = await Verification.findOne({
-                userId: user._id,
-              });
+//             if (!user.isEmailVerified) {
+//               const existingVerification = await Verification.findOne({
+//                 userId: user._id,
+//               });
         
-              if (existingVerification && existingVerification.expiresAt > new Date()) {
-                return res.status(400).json({
-                  message:
-                    "Email not verified. Please check your email for the verification link.",
-                });
-              } else {
-                await Verification.findByIdAndDelete(existingVerification._id);
+//               if (existingVerification && existingVerification.expiresAt > new Date()) {
+//                 return res.status(400).json({
+//                   message:
+//                     "Email not verified. Please check your email for the verification link.",
+//                 });
+//               } else {
+//                 await Verification.findByIdAndDelete(existingVerification._id);
         
-                const verificationToken = jwt.sign(
-                  { userId: user._id, purpose: "email-verification" },
-                  process.env.JWT_SECRET,
-                  { expiresIn: "1h" }
-                );
+//                 const verificationToken = jwt.sign(
+//                   { userId: user._id, purpose: "email-verification" },
+//                   process.env.JWT_SECRET,
+//                   { expiresIn: "1h" }
+//                 );
         
-                await Verification.create({
-                  userId: user._id,
-                  token: verificationToken,
-                  expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
-                });
+//                 await Verification.create({
+//                   userId: user._id,
+//                   token: verificationToken,
+//                   expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
+//                 });
+
+
+
+//                 if (user.is2FAEnabled) {
+//                   // Generate 6-digit code
+//                   const code = Math.floor(100000 + Math.random() * 900000).toString();
+            
+//                   // Save code and expiry to user or a separate model (for security, add expiry e.g. 10min)
+//                   user.twoFAOtp = code;
+//                   user.twoFAOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+//                   await user.save();
+
+
+//                   user.lastLogin = new Date();
+//                   await user.save();
+              
+            
+//                   // Send code to user's email
+//                   const emailSubject = "Your login verification code";
+//                   const emailBody = `<p>Your login code is <b>${code}</b>. It expires in 10 minutes.</p>`;
+//                   await sendEmail(email, emailSubject, emailBody);
+            
+//                   // Don't send JWT yet, only return info for client
+//                   return res.status(200).json({
+//                     message: "2FA code sent to your email",
+//                     user: {
+//                       email: user.email,
+//                       is2FAEnabled: true
+//                     }
+//                   });
+//                 }
+
+//                 // console.log("email is ",user.is2FAEnabled);
+                
         
-                // send email
-                const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
-                const emailBody = `<p>Click <a href="${verificationLink}">here</a> to verify your email</p>`;
-                const emailSubject = "Verify your email";
+//                 // send email
+//                 const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+//                 const emailBody = `<p>Click <a href="${verificationLink}">here</a> to verify your email</p>`;
+//                 const emailSubject = "Verify your email";
         
-                const isEmailSent = await sendEmail(email, emailSubject, emailBody);
+//                 const isEmailSent = await sendEmail(email, emailSubject, emailBody);
+
+//                 if(user.is2FAEnabled == true){
+//                   sendEmail(email, emailSubject, emailBody)
+//                 }
         
-                if (!isEmailSent) {
-                  return res.status(500).json({
-                    message: "Failed to send verification email",
-                  });
-                }
+//                 if (!isEmailSent) {
+//                   return res.status(500).json({
+//                     message: "Failed to send verification email",
+//                   });
+//                 }
         
-                res.status(201).json({
-                  message:
-                    "Verification email sent to your email. Please check and verify your account.",
-                });
-              }
-            }
+//                 res.status(201).json({
+//                   message:
+//                     "Verification email sent to your email. Please check and verify your account.",
+//                 });
+//               }
+//             }
         
-            const isPasswordValid = await bcrypt.compare(password, user.password);
+//             const isPasswordValid = await bcrypt.compare(password, user.password);
         
-            if (!isPasswordValid) {
-              return res.status(400).json({ message: "Invalid email or password" });
-            }
+//             if (!isPasswordValid) {
+//               return res.status(400).json({ message: "Invalid email or password" });
+//             }
         
-            const token = jwt.sign(
-              { userId: user._id, purpose: "login" },
-              process.env.JWT_SECRET,
-              { expiresIn: "7d" }
-            );
+//             const token = jwt.sign(
+//               { userId: user._id, purpose: "login" },
+//               process.env.JWT_SECRET,
+//               { expiresIn: "7d" }
+//             );
         
-            user.lastLogin = new Date();
-            await user.save();
+//             user.lastLogin = new Date();
+//             await user.save();
         
-            const userData = user.toObject();
-            delete userData.password;
+//             const userData = user.toObject();
+//             delete userData.password;
         
-            res.status(200).json({
-              message: "Login successful",
-              token,
-              user: userData,
-            })
+//             res.status(200).json({
+//               message: "Login successful",
+//               token,
+//               user: userData,
+//             })
         
-    } catch (error) {
-        console.error("Error in registeruser:", error);
-        res.status(500).json({ message: "Internal Server Error 3" });
+//     } catch (error) {
+//         console.error("Error in registeruser:", error);
+//         res.status(500).json({ message: "Internal Server Error 3" });
+//     }
+
+// }
+
+
+
+
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-}
+    if (!user.isEmailVerified) {
+      // ... your existing email verification logic ...
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // 2FA logic
+    if (user.is2FAEnabled) {
+      // Generate 6-digit code
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      console.log("code is ", email);
+
+      // Save code and expiry to user or a separate model (for security, add expiry e.g. 10min)
+      user.twoFAOtp = code;
+      user.twoFAOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+      await user.save();
+
+      // Send code to user's email
+      const emailSubject = "Your login verification code";
+      const emailBody = `<p>Your login code is <b>${code}</b>. It expires in 10 minutes.</p>`;
+      await sendEmail(email, emailSubject, emailBody);
+
+      // Don't send JWT yet, only return info for client
+      return res.status(200).json({
+        message: "2FA code sent to your email",
+        user: {
+          email: user.email,
+          is2FAEnabled: true
+        }
+      });
+    }
+
+    // Else, normal login
+    const token = jwt.sign(
+      { userId: user._id, purpose: "login" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    user.lastLogin = new Date();
+    await user.save();
+
+    const userData = user.toObject();
+    delete userData.password;
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Error in loginUser:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 
 const verifyEmail = async (req, res) => {
@@ -320,9 +431,9 @@ const resetPasswordRequest = async (req, res) => {
 
       const user = await User.findOne({ email });
   
-      if (!user) {
-        return res.status(400).json({ message: "User not found" });
-      }
+      // if (!user) {
+      //   return res.status(400).json({ message: "User not found" });
+      // }
   
       if (!user.isEmailVerified) {
         return res
@@ -435,6 +546,111 @@ const verifyResetPasswordTokenAndResetPassword = async (req, res) => {
   }
 };
 
+
+// const verify2FA = async (req, res) => {
+//   try {
+//     const { email, code } = req.body;
+//     const user = await User.findOne({ email });
+
+//     if (
+//       !user ||
+//       !user.twoFACode ||
+//       user.twoFACode !== code ||
+//       !user.twoFACodeExpires ||
+//       user.twoFACodeExpires < new Date()
+//     ) {
+//       return res.status(400).json({ message: "Invalid or expired code" });
+//     }
+
+//     // Clear the code
+//     user.twoFACode = undefined;
+//     user.twoFACodeExpires = undefined;
+//     await user.save();
+
+//     // Now issue JWT
+//     const token = jwt.sign(
+//       { userId: user._id, purpose: "login" },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "7d" }
+//     );
+//     const userData = user.toObject();
+//     delete userData.password;
+
+//     res.status(200).json({
+//       message: "2FA verification successful",
+//       token,
+//       user: userData,
+//     });
+//   } catch (error) {
+//     console.error("Error in verify2FA:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
+
+const verify2FA = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const user = await User.findOne({ email }).select("+twoFAOtp +twoFAOtpExpires");
+
+
+    if(!user){
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+    // if (
+    //   !user ||
+    //   !user.twoFAOtp ||
+    //   user.twoFAOtp !== code ||
+    //   !user.twoFACodeExpires ||
+    //   user.twoFAOtpExpires < new Date()
+    // ) {
+    //   return res.status(400).json({ message: "Invalid or expired code" });
+    // }
+
+    // // Clear the code
+    // user.twoFACode = undefined;
+    // user.twoFACodeExpires = undefined;
+    // await user.save();
+
+   // console.log("user is ", email);
+    if (
+      !user ||
+      !user.twoFAOtp ||
+      user.twoFAOtp !== code ||
+      !user.twoFAOtpExpires ||
+      user.twoFAOtpExpires < new Date()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired code" });
+    }
+    
+    // Clear the code after successful verification
+    user.twoFAOtp = undefined;
+    user.twoFAOtpExpires = undefined;
+    await user.save();
+    
+
+    // Now issue JWT
+    const token = jwt.sign(
+      { userId: user._id, purpose: "login" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    const userData = user.toObject();
+    delete userData.password;
+
+    res.status(200).json({
+      message: "2FA verification successful",
+      token,
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Error in verify2FA:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
  
 
 export {
@@ -442,5 +658,6 @@ export {
     loginUser,
     verifyEmail,
     resetPasswordRequest,
-    verifyResetPasswordTokenAndResetPassword
+    verifyResetPasswordTokenAndResetPassword,
+    verify2FA
 }

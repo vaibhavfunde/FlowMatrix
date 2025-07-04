@@ -2,7 +2,7 @@ import express from 'express';
 import {z} from 'zod';
 import { validateRequest } from 'zod-express-middleware';
 import { loginSchema, registerSchema, verifyEmailSchema ,resetPasswordSchema,emailSchema } from '../libs/validate-schema.js';
-import { loginUser, registeruser, verifyEmail,resetPasswordRequest  ,verifyResetPasswordTokenAndResetPassword} from '../controller/auth-controller.js';
+import { loginUser, registeruser, verifyEmail,resetPasswordRequest  ,verifyResetPasswordTokenAndResetPassword, verify2FA} from '../controller/auth-controller.js';
 //import { verify } from 'jsonwebtoken';
 
 const router = express.Router();
@@ -45,6 +45,18 @@ router.post("/login",
             }),
             verifyResetPasswordTokenAndResetPassword
           );
+
+        
+          router.post(
+            "/verify",
+            validateRequest({
+              body: z.object({
+                code: z.string(),
+                email: z.string(),
+              }),
+            }),
+            verify2FA
+          )
           
 
 export default router;

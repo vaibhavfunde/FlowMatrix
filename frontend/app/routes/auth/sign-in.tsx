@@ -27,6 +27,8 @@ import { Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import type { User } from "~/types";
+
 
 
 type SigninFormData = z.infer<typeof signInSchema>;
@@ -47,10 +49,27 @@ function SignIn() {
     
     mutate(values, {
       onSuccess: (data) => {
-        login(data);
-        console.log(data);
-        toast.success("Login successful");
-        navigate("/dashboard");
+        
+        //console.log(data);
+         console.log(data?.user?.is2FAEnabled)
+
+         if (data?.user?.is2FAEnabled == true) {
+          toast.success("2FA enabled. Redirecting... || code sent to email");
+         console.log("email is ",data.user.email);
+         localStorage.setItem("2fa_email", data.user.email);
+          navigate("/two-factor-auth", {
+            state: {
+              email: data?.user?.email,
+            },
+
+          });
+        } else {
+          toast.success("Login successful. Redirecting...");
+          console.log("email is ",data.user.email);
+          login(data);
+          navigate("/dashboard");
+        }
+       
       },
       onError: (error: any) => {
         const errorMessage =

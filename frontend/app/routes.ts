@@ -8,6 +8,7 @@ export default [
         route("forgot-password", "routes/auth/forgot-password.tsx"),
         route("reset-password", "routes/auth/reset-password.tsx"),
         route("verify-email", "routes/auth/verify-email.tsx"),
+        route("two-factor-auth", "routes/auth/twoface.tsx"),
       ]),
       layout("routes/dashboard/dashboard-layout.tsx", [
          route("dashboard", "routes/dashboard/index.tsx"),
@@ -25,8 +26,10 @@ export default [
           "workspaces/:workspaceId/projects/:projectId/tasks/:taskId",
           "routes/dashboard/task/task-details.tsx"
         ),
-        // route("my-tasks", "routes/dashboard/my-tasks.tsx"),
-        // route("members", "routes/dashboard/members.tsx"),
+        route("my-tasks", "routes/dashboard/my-tasks.tsx"),
+         route("members", "routes/dashboard/members.tsx"),
+         route("settings", "routes/dashboard/setting/UserSettings.tsx"),
+
     
 
       ]),
@@ -35,6 +38,9 @@ export default [
         "workspace-invite/:workspaceId",
         "routes/dashboard/workspaces/workspace-invite.tsx"
       ),
+      layout("routes/user/user-layout.tsx", [
+        route("user/profile", "routes/user/profile.tsx"),
+      ]),
     
 ] satisfies RouteConfig;
 
